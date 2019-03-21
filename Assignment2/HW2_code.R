@@ -1,10 +1,20 @@
-library(tidyverse)
-library(locfit)
+## Packages loading/installation
+auto_load <- function(pkg){
+  new.pkg <- pkg[!(pkg %in% installed.packages()[, "Package"])]
+  if (length(new.pkg)) 
+    install.packages(new.pkg, dependencies = TRUE)
+  sapply(pkg, require, character.only = TRUE)
+}
 
-testX <- read.csv("hw2-data/X_test.csv", header = FALSE)
-testY <- read.csv("hw2-data/Y_test.csv", header = FALSE)
-trainX <- read.csv("hw2-data/X_train.csv", header = FALSE)
-trainY <- read.csv("hw2-data/Y_train.csv", header = FALSE)
+# usage
+packages <- c("readr", "tidyverse", "ggplot2", "ggthemes", "locfit", "here")
+auto_load(packages)
+
+
+testX <- read.csv("Data/X_test.csv", header = FALSE)
+testY <- read.csv("Data/Y_test.csv", header = FALSE)
+trainX <- read.csv("Data/X_train.csv", header = FALSE)
+trainY <- read.csv("Data/Y_train.csv", header = FALSE)
 
 ## Naive Bayes
 
@@ -56,15 +66,16 @@ y <- cbind(bern_only_y0, bern_only_y1)
 
 df <-  data.frame(y = c(bern_only_y0, bern_only_y1),x=rep(x,2), class=factor(rep(c(0,1),each=length(x))))
 
-library(ggplot2)
 p <- ggplot(aes(group=class, col=class, shape=class), data=df) + 
   geom_hline(aes(yintercept=0)) +
   geom_segment(aes(x,y,xend=x,yend=y-y)) + 
   geom_point(aes(x,y),size=3) +
   xlab("Theta") +
-  ylab("Value of theta") 
-rm(y, i, j, pi_pred, temp0, temp1, x, y_pred)
-p
+  ylab("Value of theta") +
+  theme_tufte() + 
+  ggtitle("Class Conditional Weights")
+#rm(y, i, j, pi_pred, temp0, temp1, x, y_pred)
+ggsave("Images/Nbayes.png", plot = p)
 
 
 
@@ -110,8 +121,12 @@ knn <- data.frame(knn)
 ggplot(data = knn, aes(x = V2, y = correct)) +
   geom_point() +
   geom_line() +
-  xlab("k") +
-  ylab("% Prediction Accuracy")
+  xlab("K") +
+  ylab("Classification Accuracy") +
+  theme_tufte() + 
+  ggtitle("KNN K-Varying Accuracy")
+#rm(y, i, j, pi_pred, temp0, temp1, x, y_pred)
+ggsave("Images/KNN.png")
 
 
 
@@ -122,7 +137,7 @@ trainX_2 <- cbind(c(rep(1, 4508)), trainX)
 trainY_2 <- replace(trainY, trainY == 0, -1)
 trainX_2 <- as.matrix(trainX_2)
 trainY_2 <- unname(unlist(trainY_2))
-testX_2 <- cbind(crep(1,93), testX)
+testX_2 <- cbind(c(rep(1,93)), testX)
 
 
 logis <- function(x, y, w) {
@@ -159,7 +174,7 @@ logis_likely <- function(x, y, w) {
 W <- matrix(0, ncol = 10000, nrow = 58)
 liklihood <- c(rep(NA, 10000))
 
-for(i in 2:500) {
+for(i in 2:10000) {
   eta <- (1 / ((10^5)*(i + 1)^0.5))
   w <- as.matrix(W[,i-1])
   W[,i] <- W[,i-1] + eta*(logis(x = trainX_2, y = trainY_2, w ))
@@ -178,10 +193,10 @@ logis_Newton <- function(x, y, w) {
     }
     else{
       b <- as.vector(1 - (1 - expit(x[i,]%*%w)))*y[i]*x[i,]
-      c <- as.vector(1 -expit(x[i,]%*%w))*as.vector((1 - 1 - expit(x[i,]%*%w)))*x[i,]*t(x[i,])
+      c <- as.matrix(1 -expit(x[i,]%*%w))*as.vector((1 - 1 - expit(x[i,]%*%w)))*x[i,]*t(x[i,])
     }
     a <- rbind(a,b)
-    d <- d + c
+   d <- d + c
   }
   d <- solve(d)
   a <- colSums(a)
@@ -190,16 +205,17 @@ logis_Newton <- function(x, y, w) {
   return(final)
 }
 
-W <- matrix(0, ncol = 100, nrow = 58)
-liklihood <- c(rep(NA, 100))
+W_new <- matrix(0, ncol = 100, nrow = 58)
+liklihood_new <- c(rep(NA, 100))
 
 for(i in 2:100) {
   eta <- (1 / ((i + 1)^0.5))
-  w <- as.matrix(W[,i-1])
-  W[,i] <- W[,i-1] - eta*(logis_Newton(x = trainX_2, y = trainY_2, w ))
-  liklihood[i-1] <- logis_likely(x = trainX_2, y = trainY_2, w )
+  w <- as.matrix(W_new[,i-1])
+  W_new[,i] <- W_new[,i-1] - eta*(logis_Newton(x = trainX_2, y = trainY_2, w ))
+  liklihood_new[i-1] <- logis_likely(x = trainX_2, y = trainY_2, w )
 }
 
-y_pred <- expit(X_test %*% W[,41])
+y_pred <- expit(as.matrix(testX_2) %*% W[,1000])
+y_pred_bin <- y_pred>=0.5
 
-table(y_pred, testY, dnn = c("Predicted Y", "Actual Y"))
+table(y_pred_bin, as.matrix(testY), dnn = c("Predicted  Y", "Actual Y"))

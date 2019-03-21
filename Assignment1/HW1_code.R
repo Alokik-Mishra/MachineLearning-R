@@ -1,14 +1,22 @@
-library("tidyverse")
-library("readr")
-library("ggplot2")
-setwd("/Users/alokikmishra/Desktop/Classes/Sem2/ML/HW/HW1")
+## Packages loading/installation
+auto_load <- function(pkg){
+  new.pkg <- pkg[!(pkg %in% installed.packages()[, "Package"])]
+  if (length(new.pkg)) 
+    install.packages(new.pkg, dependencies = TRUE)
+  sapply(pkg, require, character.only = TRUE)
+}
+
+# usage
+packages <- c("readr", "tidyverse", "ggplot2", "ggthemes")
+auto_load(packages)
+
 
 ## Reading in the files and converting to matrices
 
-X_test <- read_csv("hw1-data/X_test.csv", col_names = FALSE)
-X_train <- read_csv("hw1-data/X_train.csv", col_names = FALSE)
-y_test <- read_csv("hw1-data/y_test.csv", col_names = FALSE)
-y_train <- read_csv("hw1-data/y_train.csv", col_names = FALSE)
+X_test <- read_csv("Data/X_test.csv", col_names = FALSE)
+X_train <- read_csv("Data/X_train.csv", col_names = FALSE)
+y_test <- read_csv("Data/y_test.csv", col_names = FALSE)
+y_train <- read_csv("Data/y_train.csv", col_names = FALSE)
 
 
 X_test <- as.matrix(X_test)
@@ -49,7 +57,10 @@ ggplot(final_1) +
   geom_line(aes(df_lam, V7, color = "W7"), show.legend = TRUE) +
   ylab("Coefficient value") +
   xlab("df(lambda)") +
+  theme_tufte() +
+  ggtitle("L2 Regularization and Lambda") +
   theme(legend.position = "bottom")
+ggsave("Images/L2_reg_dflambda.png")
   
 
 ## Predicting and plotting RMSE of testing data with lambda = 1:50
@@ -63,8 +74,16 @@ for(i in 1:50) {
   y_hat <- X_test %*% w[,i]
   RMSE[i] <- (sum((y_test - y_hat)^2)/42)^0.5
 }
- 
-plot(lambda, RMSE) 
+
+plt2_df <-  as_data_frame(cbind(lambda, RMSE))
+ggplot(plt2_df) +
+  geom_line(aes(lambda, RMSE, color = "W1"), show.legend = TRUE) +
+  ylab("RMSE") +
+  xlab("Lambda") +
+  theme_tufte() +
+  ggtitle("RMSE and Lambda") +
+  theme(legend.position = "bottom")
+ggsave("Images/RMSE_lambda.png")
 
 # Ploynomial Regression Modification
 
@@ -136,5 +155,8 @@ ggplot(Total_2) +
   geom_line(aes(lambda_500, RMSE_2, color = "p = 2"), show.legend = TRUE) +
   geom_line(aes(lambda_500, RMSE_3, color = "p = 3"), show.legend = TRUE) +
   ylab("RMSE") +
-  xlab("lambda") +
+  xlab("Lambda") +
+  theme_tufte() +
+  ggtitle("RMSE and Lambda (Polynomial)") +
   theme(legend.position = "bottom")
+ggsave("Images/RMSE_lambda_poly.png")
