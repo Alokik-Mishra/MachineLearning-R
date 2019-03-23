@@ -1,14 +1,22 @@
-library(tidyverse)
-library(reshape2)
-library(ggplot2)
-library(ggthemes)
+## Packages loading/installation
+auto_load <- function(pkg){
+  new.pkg <- pkg[!(pkg %in% installed.packages()[, "Package"])]
+  if (length(new.pkg)) 
+    install.packages(new.pkg, dependencies = TRUE)
+  sapply(pkg, require, character.only = TRUE)
+}
+
+# usage
+packages <- c("readr", "tidyverse", "ggplot2", "ggthemes", "reshape2")
+auto_load(packages)
+
 
 ## Question 1
 
 ## Setup
 
 rm(list = ls())
-Scores<-read.csv("hw5-data/CFB2017_scores.csv", head=FALSE)
+Scores<-read.csv("Data/CFB2017_scores.csv", head=FALSE)
 
 Scores2 <- Scores %>%
   rename(Team_A = V1, 
@@ -61,7 +69,7 @@ State <- function(t,W0,M) {
   return(W0)
 }
 
-Teams <- readLines("hw5-data/TeamNames.txt")
+Teams <- readLines("Data/TeamNames.txt")
 Teams<-data.frame(Teams)
 colnames(Teams)<-"team"
 
@@ -72,7 +80,7 @@ Rank <- function(W, DF, t, band) {
   Band_Val <- W[Band]
   Band_Teams <- data.frame(DF[Band,])
   Result <- cbind(Band, Band_Teams , Band_Val)
-  colnames(result)<-c("Index", "Team", "Wt")
+  colnames(Result)<-c("Index", "Team", "Wt")
   Title <- paste(t , ".csv", sep="")
   write.csv(Result,file = Title)
   a <- assign(Title, Result)
@@ -109,7 +117,8 @@ Data <- data.frame('W-W_stationary' = D, Time = t)
 ggplot(data = Data) +
   geom_line(aes(x = Time, y = W.W_stationary)) +
   ylab(bquote(~abs( W[0] - W[inf] ))) +
-  ggtitle("Question 1 B") + theme_tufte()
+  ggtitle("Markov Chain: Stable State") + theme_tufte()
+ggsave("Images/Markov.png")
 
 
 ## Question 2
@@ -118,7 +127,7 @@ ggplot(data = Data) +
 
 rm(list = ls())
 
-Name <- "hw5-data/nyt_data.txt"
+Name <- "Data/nyt_data.txt"
 NYT <- file(Name,open="r")
 LineN <- readLines(NYT)
 X <- matrix(0,nrow=3012, ncol=8447)
@@ -173,11 +182,12 @@ Data <- data.frame(Penalty, Iteration)
 ggplot(data = Data)+
   geom_line(aes(x = Iteration, y = Penalty)) +
   theme_tufte() + ggtitle("Penalty Convergence")
+ggsave("Images/NNMF_Divergence.png")
 
 ## B
 
 W <- (apply(W, 2, function(x) x/sum(x)))
-Name <- "hw5-data/nyt_vocab.dat"
+Name <- "Data/nyt_vocab.dat"
 NYT <- file(Name, open="r")
 Bag <-readLines(NYT)
 close(NYT)

@@ -2,19 +2,27 @@
 #### Assignment: Machine Learning Homework 3
 #### Date: 03/18/2018
 ##################################
+## Packages loading/installation
+auto_load <- function(pkg){
+  new.pkg <- pkg[!(pkg %in% installed.packages()[, "Package"])]
+  if (length(new.pkg)) 
+    install.packages(new.pkg, dependencies = TRUE)
+  sapply(pkg, require, character.only = TRUE)
+}
 
-library(tidyverse)
-setwd("/Users/alokikmishra/Dropbox/Classes/Sem2/ML/HW/HW3")
+# usage
+packages <- c("readr", "tidyverse", "ggplot2", "ggthemes")
+auto_load(packages)
 
 
 ###################################
 #### Question 1: Gaussian Processes
 ###################################
 ## Importing Data
-X_test <- read_csv("gaussian_process/X_test.csv", col_names = FALSE)
-Y_test <- read_csv("gaussian_process/Y_test.csv", col_names = FALSE)
-X_train <- read_csv("gaussian_process/X_train.csv", col_names = FALSE)
-Y_train <- read_csv("gaussian_process/Y_train.csv", col_names = FALSE)
+X_test <- read_csv("Data/gaussian_process/X_test.csv", col_names = FALSE)
+Y_test <- read_csv("Data/Y_test.csv", col_names = FALSE)
+X_train <- read_csv("Data/gaussian_process/X_train.csv", col_names = FALSE)
+Y_train <- read_csv("Data/gaussian_process/Y_train.csv", col_names = FALSE)
 
 
 ## Setting up function to generate Kernel matrix
@@ -78,7 +86,11 @@ ggplot(plot_df) +
   geom_point(aes(plot_df$X4, plot_df$X1, col = "Y")) +
   geom_line(aes(plot_df$X4, plot_df$y_pred, col = "Predictive Mean - Gaussian")) +
   xlab("Car Weight") +
-  ylab("")
+  ylab("Actual MPG") +
+  theme_tufte() +
+  ggtitle("Gaussian Process") +
+  theme(legend.position = "bottom")
+ggsave("Images/gaussian.png")
 
 
 ###################################
@@ -92,14 +104,14 @@ OLS_pred_class <- function(x, X, Y){
   beta <- solve(as.matrix(t(X)) %*% as.matrix(X)) %*% as.matrix(t(X)) %*% as.matrix(Y)
   pred_OLS <- sign(as.matrix(x) %*% as.matrix(beta))
   list(pred = pred_OLS, b = beta)
-  
+}
   
 ## Importing Data
   
-  X_test <- read_csv("boosting/X_test.csv", col_names = FALSE)
-  Y_test <- read_csv("boosting/Y_test.csv", col_names = FALSE)
-  X_train <- read_csv("boosting/X_train.csv", col_names = FALSE)
-  Y_train <- read_csv("boosting/Y_train.csv", col_names = FALSE)
+  X_test <- read_csv("Data/boosting/X_test.csv", col_names = FALSE)
+  Y_test <- read_csv("Data/boosting/Y_test.csv", col_names = FALSE)
+  X_train <- read_csv("Data/boosting/X_train.csv", col_names = FALSE)
+  Y_train <- read_csv("Data/boosting/Y_train.csv", col_names = FALSE)
   
   const_tr <- c(rep(1, nrow(X_train)))
   const_test <- c(rep(1, nrow(X_test)))
@@ -174,6 +186,7 @@ BoostOLS <- function(Rounds, testx, testy, trainx, trainy){
         TR_Error_boosted[i] <- TR_Error_boosted[i-1]
         Test_Error_boosted[i] <- Test_Error_boosted[i-1]
       }
+    print(paste("Round", i, "complete"))
     }
     
     
@@ -182,7 +195,6 @@ BoostOLS <- function(Rounds, testx, testy, trainx, trainy){
          Boost_test_error = Test_Error_boosted, Boost_train_error = TR_Error_boosted)
     
   }
-}
 
 
 ## Running Function for T = 1500 with data given (~ 1 minute runtime)
@@ -203,7 +215,11 @@ ggplot(error_comp) +
   geom_line(aes(T, tr_boost_err, col = "Boosted Training Error")) +
   geom_line(aes(T, test_boost_err, col = "Boosted Testing Error")) +
   xlab("Iteration") +
-  ylab("Misclassification %")
+  ylab("Misclassification %") + 
+  theme_tufte() +
+  ggtitle("Boosting Error") +
+  theme(legend.position = "bottom")
+ggsave("Images/boost_error.png")
 
 ## Plotting Upper Bound
 
@@ -219,7 +235,11 @@ upper_calc <- data.frame(cbind(T, upper_bound))
 ggplot(upper_calc)+
   geom_line(aes(T, upper_bound, col = "Upper Bound")) +
   ylab("Upper Bound") +
-  xlab("Iteration")
+  xlab("Iteration") +
+  theme_tufte() +
+  ggtitle("Boosting : Upper Bound") +
+  theme(legend.position = "bottom")
+ggsave("Images/boost_upperbound.png")
 
 ## Plotting Distribution of Observations
 
@@ -228,9 +248,18 @@ Observations <- data.frame(BOOST$Samples)
 Observations <- Observations %>%
   gather(Temp, 1:1500)
 
-Observations <- Observations[,2]
+Observations <- data.frame(Observations[,2])
 
-hist(Observations, breaks = 200, xlab = "Observation Number")
+#hist(Observations, breaks = 200, xlab = "Observation Number")
+
+ggplot(Observations, aes(x=Observations...2.)) +
+  geom_histogram() + 
+  ylab("Count") +
+  xlab("Sample Number") +
+  theme_tufte() +
+  ggtitle("Boosting : Sample Distribution") +
+  theme(legend.position = "bottom")
+ggsave("Images/boost_sampledist.png")
 
 ## Plotting Alpha and Epsilon as function of T
 
@@ -240,10 +269,24 @@ alpha_t <- BOOST$Alpha
 Error <- data.frame(cbind(T, e_t))
 Alpha <- data.frame(cbind(T, alpha_t))
 
+Combined <- left_join(Error, Alpha)
+
+ggplot(Combined) +
+  geom_line(aes(T, e_t, col = "Epsilon")) +
+  geom_line(aes(T, alpha_t, col = "Alpha")) +
+  ylab("Value") +
+  xlab("Iteration") +
+  theme_tufte() +
+  ggtitle("Boosting : Alpha and Epsilon") +
+  theme(legend.position = "bottom")
+ggsave("Images/boost_AandE.png")
+
+
 ggplot(Error) +
   geom_line(aes(T, e_t, col = "Epsilon")) +
-  ylab("") +
-  xlab("Iteration")
+  ylab("Epsilon") +
+  xlab("Iteration") 
+
 
 ggplot(Alpha) +
   geom_line(aes(T, alpha_t, col = "Alpha")) +

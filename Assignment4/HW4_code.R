@@ -1,8 +1,15 @@
-library(mvtnorm)
-library(ggplot2)
-library(reshape2)
-library(ggthemes)
-library(tidyverse)
+## Packages loading/installation
+auto_load <- function(pkg){
+  new.pkg <- pkg[!(pkg %in% installed.packages()[, "Package"])]
+  if (length(new.pkg)) 
+    install.packages(new.pkg, dependencies = TRUE)
+  sapply(pkg, require, character.only = TRUE)
+}
+
+# usage
+packages <- c("readr", "tidyverse", "ggplot2", "ggthemes", "mvtnorm", "reshape2")
+auto_load(packages)
+
 
 set.seed(1234)
 
@@ -125,8 +132,11 @@ colnames(Clusters)[2] <- "k"
 
 plot1<-ggplot(data = Clusters, aes(x = Trial, y = value, colour = k)) +
   geom_line() + 
-  labs(title = "", x = "Iterations", y = "L", color = "# of Clusters") + theme_tufte() 
+  labs(title = "K-means Clusters", x = "Iterations", y = "L", color = "# of Clusters") + theme_tufte() +
+  theme(legend.position = "bottom")
+ggsave("Images/Clusters1.png", plot = plot1)
 
+  
 plot1
 
 
@@ -152,9 +162,14 @@ plot2<-ggplot(Combined, aes(x,y))+
   geom_point(aes(color=factor(cluster)))+ facet_grid(~Total_K) +
   labs(xlab="x")+
   labs(ylab="y")+
-  labs(title = "", x = "X", y = "Y", color = "# of Clusters")
+  labs(title = "Cluster Visualization", x = "X", y = "Y", color = "# of Clusters") +
+  theme_tufte() +
+  theme(legend.position = "bottom")
 
 plot2
+ggsave("Images/Clusters2.png", plot = plot2)
+
+
 
 ############################
 ## Question 2
@@ -163,11 +178,11 @@ plot2
 rm(list= ls())
 
 
-Train <- read.csv("hw4-data/ratings.csv", header = FALSE)
+Train <- read.csv("Data/ratings.csv", header = FALSE)
 colnames(Train) <- c("user_id", "movie_id", "rating")
 Train <-spread(Train,movie_id, rating)[,-1]
 
-Test <- read.csv("hw4-data/ratings_test.csv", header = FALSE)
+Test <- read.csv("Data/ratings_test.csv", header = FALSE)
 colnames(Test) <- c("user_id", "movie_id", "rating")
 Test <-spread(Test,movie_id, rating)[,-1]
 
@@ -276,10 +291,10 @@ colnames(Outcome)[2] <- "code_run_number"
 ### Plotting 2(a)
 
 plot1<-ggplot(data = Outcome, aes(x=iterations, y=value, colour=code_run_number)) +
-  geom_line()+
-  labs(title = "", x = "Iterations", y = "Ln L", color = "Trial") + theme_tufte()
+  geom_line()+ ylim(-95000, -90000) + 
+  labs(title = "Matrix Factorization and Log Liklihood", x = "Iterations", y = "Ln L", color = "Trial") + theme_tufte()
 
-plot1
+ggsave("Images/Matrix_Factor.png", plot = plot1)
 
 ### Writing table for 2(a)
 
