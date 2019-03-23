@@ -77,7 +77,7 @@ for(i in 1:50) {
 
 plt2_df <-  as_data_frame(cbind(lambda, RMSE))
 ggplot(plt2_df) +
-  geom_line(aes(lambda, RMSE, color = "W1"), show.legend = TRUE) +
+  geom_line(aes(lambda, RMSE), show.legend = TRUE) +
   ylab("RMSE") +
   xlab("Lambda") +
   theme_tufte() +
