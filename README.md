@@ -42,10 +42,21 @@ ELEN 4903 was a 1 semester class on machine learning theory. The course was almo
 
 <a name="tech"></a>
 ## Tech/Framework
-All of the coding is done in R. Some packages are used for data wrangling and visualization but the actual algorithms are written from scratch.
+All of the coding is done in R. Some packages are used for data wrangling and visualization but the actual algorithms are written from scratch. A function is included in the headers for all the code that install and/or loads the required packages.
 
 <a name="as1"></a>
 ## Assignment 1
+<img src="/Assignment1/Images/L2_reg_dflambda.png" width=354 align="right" height="300"> The first part of assignment 1 involves a theoretical answer which is not provided in this repo. The seocnd part involves the coding of ridge regression (OLS with L2 penalty) and comparing various hyperparameter values. The dataset used for training and testing contains features about various cars used to predict miles per gallon. The graph shows the variation of the weights with different values of the df(<a href="https://www.codecogs.com/eqnedit.php?latex=\lambda" target="_blank"><img src="https://latex.codecogs.com/gif.latex?\lambda" title="\lambda" /></a>). Higher values of lambda (and thus lower df(<a href="https://www.codecogs.com/eqnedit.php?latex=\lambda" target="_blank"><img src="https://latex.codecogs.com/gif.latex?\lambda" title="\lambda" /></a>) pulls the weights (coefficients) to 0 by increasing the penalty. One important thing to notice is that for some values the not only the magnitudes, but the signs on the weights change as well. 
+\
+\
+\
+\
+\
+Next we turn to validation of the model studying the RMSE in the testing data.
+<img src="/Assignment1/Images/RMSE_lambda.png" width=354 align="left"> 
+
+
+
 
 <a name="as2"></a>
 ## Assignment 2
