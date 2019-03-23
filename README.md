@@ -53,7 +53,8 @@ All of the coding is done in R. Some packages are used for data wrangling and vi
 \
 \
 Next we turn to both the validation of the model using RMSE on the testing set along with trying out a polynomial model with L2 regularization. 
-<img src="/Assignment1/Images/RMSE_lambda.png" width=354> <img src="/Assignment1/Images/RMSE_lambda_poly.png" width=354> 
+
+<img src="/Assignment1/Images/RMSE_lambda.png" width=400> <img src="/Assignment1/Images/RMSE_lambda_poly.png" width=400> 
 
 
 
