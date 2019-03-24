@@ -79,6 +79,8 @@ The last classifer I implement, is one of the most commonly used binary classifi
 
 <a name="as3"></a>
 ## Assignment 3
+Assignment 3 involves two coding problems, the first part is a gaussian process, and the second is the implmentation of a boosting algorithm on a simple OLS model. In the first part I use the same dataset as that in the first assignment, using various car characteristics as features to predict miles per gallon.
+
 
 <a name="as4"></a>
 ## Assignment 4
