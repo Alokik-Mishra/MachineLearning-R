@@ -62,6 +62,20 @@ The results above are fairly intutitive. The OLS model seems to perform best wit
 
 <a name="as2"></a>
 ## Assignment 2
+The second assignment shifts focus from regression to classification. The first problem involves a theoretical ML derivation of the naive Bayes classifier, and this part of the solution is not included in this repo. The second part of the assignment <img src="/Assignment2/Images/Nbayes.png" width=400 align="right" height="300"> involves coding various classifiers on a dataset consisting spam and nonspam emails with words as features.
+
+The first classifier is the naive bayes we derived in the first part of the assignment. This chart shows the class conditional weights for the different features. A value of 1 indicates the email is labelled spam and 0 nonspam. The different weights represent the different conditional liklihood of the different classes for each feature. For example, the features 16 and 52 represent the words "free" and "!" respectively. It makes sense that given a high presence of these words, the email is more likely to b spam (y = 1) than not.
+ \
+ \
+ \
+ Next I implement a non-probabalistic classfier, he K nearest neighbors (k-nn) classifier. The performance of the model on the testing set with varying values of k are shown below. 
+ 
+<img src="/Assignment2/Images/KNN.png" width=400 align="center" height="300">
+
+The last classifer I implement, is one of the most commonly used binary classifiers, the logistic regression. I implement the regression using two methods, the normal stochastic gradient decsent (sdg) method and Newton's method. The log liklihood of each as a function of iterations is shown below.
+
+
+<img src="/Assignment2/Images/Log_liklihood.png" width=400> <img src="/Assignment2/Images/Log_liklihood_newton.png" width=400> 
 
 <a name="as3"></a>
 ## Assignment 3
