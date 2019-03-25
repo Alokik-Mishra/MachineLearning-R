@@ -79,11 +79,46 @@ The last classifer I implement, is one of the most commonly used binary classifi
 
 <a name="as3"></a>
 ## Assignment 3
-Assignment 3 involves two coding problems, the first part is a gaussian process, and the second is the implmentation of a boosting algorithm on a simple OLS model. In the first part I use the same dataset as that in the first assignment, using various car characteristics as features to predict miles per gallon.
+Assignment 3 involves two coding problems, the first part is a gaussian process, and the second is the implmentation of a boosting algorithm on a simple OLS model. In the first part I use the same dataset as that in the first assignment, using various car characteristics as features to predict miles per gallon. The second questions uses an room occupancy dataset found [here](https://archive.ics.uci.edu/ml/datasets/Occupancy+Detection+)
+
+The gaussian process algorithm involves creating kernal matrices using the radial basis function and then using that to predict values based on the hyperparameters _b_ and <a href="https://www.codecogs.com/eqnedit.php?latex=\sigma^2" target="_blank"><img src="https://latex.codecogs.com/gif.latex?\sigma^2" title="\sigma^2" /></a> . Below I show a scatter plot with the predicted mean based on just using one of the features (car weight).
+
+<img src="/Assignment3/Images/gaussian.png" width=400>
+
+<img src="/Assignment3/Images/boost_sampledist.png" width=300 align="right">The second part of the assignment involved using the Adaboost algorithm on a simple OLS model. I used 1500 iterations for the boosting. The distribution of the sampled observations can be seen on the right. It is clear that the sampling was highly uneven with some of the observations having a alrge influence on weight optimization. Below I show <a href="https://www.codecogs.com/eqnedit.php?latex=\alpha_t" target="_blank"><img src="https://latex.codecogs.com/gif.latex?\alpha_t" title="\alpha_t" /></a> and <a href="https://www.codecogs.com/eqnedit.php?latex=\epsilon_t" target="_blank"><img src="https://latex.codecogs.com/gif.latex?\epsilon_t" title="\epsilon_t" /></a> as a function of _t_.
+
+<img src="/Assignment3/Images/boost_AandE.png" width=400>
 
 
 <a name="as4"></a>
 ## Assignment 4
+In assignment 4 we switch gears from supervised learning to unsupervised learning. In the first part of the assignment I first generate three Gaussians on **R<sup>2</sup>** with different mean and mixing weights but the same covariance matrices. I then implement the k-means clustering algorithms for various _k_ clusters which allows us to test how well the unsupervised algorithm works whilst knowing the true data generating process. 
+
+<img src="/Assignment4/Images/Clusters1.png" width=400> <img src="/Assignment4/Images/Clusters2.png" width=400>
+
+Above, I show both the k-means objective function as a function of iterations (left) and the final cluster assignment after 20 iterations of the data sample for two different _k_ (right). From the left we can see that increasing the number of clusters will montonically decrease the loss function, however this should not be used as the only metric, as we know the true _k_ is 3  not 5, which can be seen from the image on the right as well as our prior information on the data generating process.
+
+In the second part of the assignment I implement a matrix factorization algorithm on a user-movie dataset. The log liklihood as a function of iterations for different intitalizations can be seen below.
+
+<img src="/Assignment4/Images/Matrix_Factor.png" width=400>
+
+All the iterations are pretty similar, however I use the highest one (trial 7) and then examine the movies "Star Wars", "My Fair Lady", and "Goodfellas". The tables with the closest movies (recommendations) to each can be seen below.
+
+
+| Star Wars                                 | My Fair Lady                                     | GoodFellas                             |
+|-------------------------------------------|--------------------------------------------------|----------------------------------------|
+| Empire Strikes Back, The (1980)           | Return of Martin                                 | Casino (1995)                          |
+| Raiders of the Lost Ark (1981)            | Guerre, The (Retour de Martin Guerre, Le) (1982) | Full Metal Jacket (1987)               |
+| Return of the Jedi (1983)                 | Carrington (1995)                                | Bonnie and Clyde (1967)                |
+| Usual Suspects, The (1995)                | Snow White and the Seven Dwarfs (1937)           | Good, The Bad and The Ugly, The (1966) |
+| Indiana Jones and the Last Crusade (1989) | Victor/Victoria (1982)                           | Apocalypse Now (1979)                  |
+| Day the Earth Stood Still, The (1951)     | Fantasia (1940)                                  | Carlito's Way (1993)                   |
+| My Man Godfrey (1936)                     | Charade (1963)                                   | Swingers (1996)                        |
+| Prefontaine (1997)                        | Only You (1994)                                  | Godfather, The (1972)                  |
+| Blues Brothers, The (1980)                | Mary Poppins (1964)                              | Godfather: Part II, The (1974)         |
+| Back to the Future (1985)                 | Singin' in the Rain (1952)                       | People vs. Larry Flynt, The (1996)     |
+
+Based on a cursory familiarity with some of the movies above it seems the algorithm was implemented with a fair degree of success using only collaborative filtering and no movie of user characteristics.
 
 <a name="as5"></a>
 ## Assignment 5
