@@ -122,3 +122,40 @@ Based on a cursory familiarity with some of the movies above it seems the algori
 
 <a name="as5"></a>
 ## Assignment 5
+In the final assignment I implment a markov chain model to rank college football teams based on their performances vis-a-vis each other. The second part of the assignment involves using nonnegative matrix factorization to do topic modelling on 8447 articles from the new york times. 
+
+<img src="/Assignment5/Images/Markov.png" width=300 align="right"> In the first part of the assignment I implement markov chain model looking the performance of 763 college football teams from the 2017 season and attempt to rank them. The chart on the right shows the difference between the weight at iteration _t_ and the steady state weight as a function of t. The table below shows the rankings by the markov chain algorithm and the rankings from [AP poll](https://www.sbnation.com/college-football/2018/1/9/16867316/college-football-rankings-final-2017-top-25). The outcomes are quite similar.
+
+| Algo Rank | Team           | Voting Rank |
+|-----------|----------------|-------------|
+| 1         | Alabama        | 1           |
+| 2         | Georgia        | 2           |
+| 3         | OhioState      | 5           |
+| 4         | Clemson        | 4           |
+| 5         | Oklahoma       | 3           |
+| 6         | Wisconsin      | 7           |
+| 7         | CentralFlorida | 6           |
+| 8         | Auburn         | 10          |
+| 9         | PennState      | 8           |
+| 10        | NotreDame      | 11          |
+
+
+In the second part of the assignment, I use non-negative martix factorization (NMF) to do topic modelling on NYT articles. Below I show the objective function value as a function of iterations.
+
+<img src="/Assignment5/Images/NNMF_Divergence.png" width=300>
+
+Next I show the top 10 words from 5 topics. As can be seen there is some coherence to the topics. The first one seems to be about logistics, the second is media, the third is business, the fourth is social/community, and the fifth is policy.
+
+| Topic 1     | Topic 2     | Topic 3   | Topic 4  | Topic 5    |
+|-------------|-------------|-----------|----------|------------|
+| agreement   | television  | company   | father   | money      |
+| plan        | medium      | business  | mrs      | state      |
+| meeting     | advertising | industry  | son      | pay        |
+| agree       | magazine    | executive | graduate | budget     |
+| issue       | network     | product   | daughter | program    |
+| negotiation | news        | customer  | mother   | tax        |
+| decision    | broadcast   | service   | marry    | cost       |
+| proposal    | video       | president | receive  | government |
+| meet        | newspaper   | base      | retire   | bill       |
+| official    | commercial  | sell      | degree   | law        |
+
